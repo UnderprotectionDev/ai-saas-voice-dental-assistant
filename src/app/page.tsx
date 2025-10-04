@@ -1,15 +1,21 @@
-import { SignedIn, SignedOut, SignOutButton, SignUpButton } from "@clerk/nextjs";
+import { CTA } from "@/components/landing/cta";
+import { Footer } from "@/components/landing/footer";
+import { Header } from "@/components/landing/header";
+import { Hero } from "@/components/landing/hero";
+import { HowItWorks } from "@/components/landing/how-it-works";
+import { PricingSection } from "@/components/landing/pricing-section";
+import { WhatToAsk } from "@/components/landing/what-to-ask";
 
 export default function Home() {
   return (
-    <div>
-      <h1>Homepage</h1>
-      <SignedOut>
-        <SignUpButton mode="modal">Sign Up</SignUpButton>
-      </SignedOut>
-      <SignedIn>
-        <SignOutButton>Sign Out</SignOutButton>
-      </SignedIn>
+    <div className="min-h-screen bg-background">
+      <Header />
+      <Hero />
+      <HowItWorks />
+      <WhatToAsk />
+      <PricingSection />
+      <CTA />
+      <Footer />
     </div>
   );
 }
