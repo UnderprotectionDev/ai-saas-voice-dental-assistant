@@ -11,6 +11,7 @@ import { APPOINTMENT_TYPES } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import Image from "next/image";
+import { AppointmentConfirmationModal } from "@/components/appointments/appointment-confirmation-modal";
 
 export default function AppointmentsPage() {
   const [selectedDentistId, setSelectedDentistId] = useState<string | null>(null);
@@ -51,8 +52,32 @@ export default function AppointmentsPage() {
         onSuccess: async (appointment) => {
           setBookedAppointment(appointment);
 
+          try {
+            const emailResponse = await fetch("/api/send-appointment-email", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userEmail: appointment.patientEmail,
+                doctorName: appointment.doctorName,
+                appointmentDate: format(new Date(appointment.date), "EEEE, MMMM d, yyyy"),
+                appointmentTime: appointment.time,
+                appointmentType: appointmentType?.name,
+                duration: appointmentType?.duration,
+                price: appointmentType?.price,
+              }),
+            });
+
+            if (!emailResponse.ok) console.error("Failed to send confirmation email");
+          } catch (error) {
+            console.error("Error sending confirmation email:", error);
+          }
+
+          // show the success modal
           setShowConfirmationModal(true);
 
+          // reset form
           setSelectedDentistId(null);
           setSelectedDate("");
           setSelectedTime("");
@@ -112,6 +137,19 @@ export default function AppointmentsPage() {
           />
         )}
       </div>
+
+      {bookedAppointment && (
+        <AppointmentConfirmationModal
+          open={showConfirmationModal}
+          onOpenChange={setShowConfirmationModal}
+          appointmentDetails={{
+            doctorName: bookedAppointment.doctorName,
+            appointmentDate: format(new Date(bookedAppointment.date), "EEEE, MMMM d, yyyy"),
+            appointmentTime: bookedAppointment.time,
+            userEmail: bookedAppointment.patientEmail,
+          }}
+        />
+      )}
 
       {userAppointments.length > 0 && (
         <div className="mb-8 max-w-7xl mx-auto px-6 py-8">
