@@ -7,6 +7,7 @@ import { useGetAppointments } from "@/hooks/use-appointment";
 import { useGetDoctors } from "@/hooks/use-doctors";
 import { useUser } from "@clerk/nextjs";
 import { SettingsIcon } from "lucide-react";
+import { RecentAppointments } from "../../components/admin/recent-appointments";
 
 export const AdminDashboardClient = () => {
   const { user } = useUser();
@@ -59,6 +60,8 @@ export const AdminDashboardClient = () => {
         />
 
         <DoctorsManagement />
+
+        <RecentAppointments />
       </div>
     </div>
   );
